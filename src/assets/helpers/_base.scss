@@ -1,0 +1,40 @@
+/* 全站設定 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap');
+html,body{
+    font-family:  'Noto Sans TC', 'Noto Sans SC', 'system-ui', 'sans-serif';
+}
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    text-decoration: none;
+    color: #000000;
+    display: block;
+    transition: all linear 300ms;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+ul,ol,li{
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+
+}
+dl{
+margin-bottom: 0;
+}
+input, button{
+	border: none;
+	background: none;
+	outline: none;
+}
+button:focus{
+    outline: 0;
+    box-shadow:none;
+}
