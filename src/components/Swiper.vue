@@ -43,27 +43,10 @@ export default {
 .container {
   height: 450px;
 }
-// #app {
-//   height: 100%;
-// }
-// html,
-// body {
-//   position: relative;
-//   height: 100%;
-// }
-
-// body {
-//   background: #eee;
-//   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-//   font-size: 14px;
-//   color: #000;
-//   margin: 0;
-//   padding: 0;
-// }
 
 .swiper {
   width: 100%;
-  height: 60%;
+  height: 100%;
 }
 
 .swiper-slide {
