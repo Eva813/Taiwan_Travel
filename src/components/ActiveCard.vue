@@ -1,12 +1,12 @@
 <template>
-  <div class="d-flex flex-wrap justify-content-around">
+  <div class="container d-flex flex-wrap justify-content-between">
     <div
       class="card"
       v-for="item in activeData"
       :key="item.title"
-      style="width: 33rem"
+      style="width: 34rem"
     >
-      <img src="@/assets/image/mountain.jpg" class="card-img-top" alt="..." />
+      <img :src="item.img" class="card-img-top" alt="activeLocation-image" />
       <div class="card-body">
         <h5 class="card-title">{{ item.title }}</h5>
         <div
@@ -33,7 +33,7 @@ export default {
       },
       {
         title: "澎湖花火節",
-        img: require("@/assets/image/mountain.jpg"),
+        img: require("@/assets/image/central.jpg"),
         location: "澎湖縣",
       },
       {
@@ -43,7 +43,7 @@ export default {
       },
       {
         title: "台中購物節",
-        img: require("@/assets/image/mountain.jpg"),
+        img: require("@/assets/image/central.jpg"),
         location: "台中市",
       },
     ]);
@@ -55,6 +55,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "~@/assets/all.scss";
+.container {
+  margin-top: 0px;
+}
 .card {
   flex-direction: row;
   margin-bottom: 1rem;
