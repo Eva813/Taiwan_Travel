@@ -53,11 +53,9 @@ export default {
     const getData = async () => {
       let data;
       await getActiveData.get().then((response) => {
-        console.log(response);
         data = response.map((item) => {
-          console.log(Object.keys(item.Picture).length !== 0);
+          //console.log(Object.keys(item.Picture).length !== 0);
           if (Object.keys(item.Picture).length !== 0) {
-            console.log("add", item);
             return {
               ActivityID: item.ActivityID,
               ActivityName: item.ActivityName,
@@ -68,11 +66,10 @@ export default {
           }
         });
       });
-      console.log("fff", data);
+
       activeData.value = data.filter((item) => {
         return item !== undefined;
       });
-      console.log("dddd", activeData.value);
     };
 
     onMounted(() => {
