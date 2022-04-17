@@ -16,4 +16,4 @@ createApp(App)
   .component('fa', FontAwesomeIcon)
   .mount('#app')
 
-import "bootstrap/dist/js/bootstrap.js"
+
