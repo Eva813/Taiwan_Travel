@@ -52,18 +52,26 @@
     </div>
   </div>
   <Swiper />
+  <h2 class="text-title">近期活動</h2>
+  <ActiveCard />
+  <h2 class="text-title">熱門打卡景點</h2>
+  <HotCard />
 </template>
 
 <script>
 // @ is an alias to /src
 import Navbar from "@/components/Navbar.vue";
 import Swiper from "@/components/Swiper.vue";
+import ActiveCard from "@/components/ActiveCard.vue";
+import HotCard from "@/components/HotCard.vue";
 
 export default {
   name: "Home",
   components: {
     Navbar,
-    Swiper
+    Swiper,
+    ActiveCard,
+    HotCard,
   },
 };
 </script>
@@ -89,5 +97,9 @@ export default {
 }
 .secontion-one {
   margin: 80px 0;
+}
+.text-title {
+  margin: 2rem 0;
+  text-align: left;
 }
 </style>
