@@ -1,19 +1,18 @@
 <template>
   <div class="container d-flex flex-wrap justify-content-between">
-    <div
-      class="card"
-      v-for="item in activeData"
-      :key="item.title"
-      style="width: 34rem"
-    >
-      <img :src="item.img" class="card-img-top" alt="activeLocation-image" />
+    <div class="card" v-for="item in activeData" :key="item.ActivityID">
+      <img
+        :src="item.Picture"
+        class="card-img-top"
+        alt="activeLocation-image"
+      />
       <div class="card-body">
-        <h5 class="card-title">{{ item.title }}</h5>
+        <h5 class="card-title">{{ item.ActivityName }}</h5>
         <div
           class="content d-flex align-items-center justify-content-xl-between"
         >
           <p class="location">
-            <fa icon="map-marker-alt" class="icon" />{{ item.location }}
+            <fa icon="map-marker-alt" class="icon" />{{ item.Location }}
           </p>
           <a href="#" class="btn">詳細介紹 ></a>
         </div>
@@ -22,31 +21,63 @@
   </div>
 </template>
 <script>
-import { reactive } from "vue";
+import { reactive, onMounted, ref } from "vue";
+import { getActiveData } from "@/apis/index.js";
+
 export default {
   setup() {
-    const activeData = reactive([
-      {
-        title: "尖石鄉",
-        img: require("@/assets/image/mountain.jpg"),
-        location: "新竹縣",
-      },
-      {
-        title: "澎湖花火節",
-        img: require("@/assets/image/central.jpg"),
-        location: "澎湖縣",
-      },
-      {
-        title: "南投沙雕節",
-        img: require("@/assets/image/mountain.jpg"),
-        location: "南投縣",
-      },
-      {
-        title: "台中購物節",
-        img: require("@/assets/image/central.jpg"),
-        location: "台中市",
-      },
+    const showData = reactive([]);
+    const activeData = ref([
+      // {
+      //   title: "尖石鄉",
+      //   img: require("@/assets/image/mountain.jpg"),
+      //   location: "新竹縣",
+      // },
+      // {
+      //   title: "澎湖花火節",
+      //   img: require("@/assets/image/central.jpg"),
+      //   location: "澎湖縣",
+      // },
+      // {
+      //   title: "南投沙雕節",
+      //   img: require("@/assets/image/mountain.jpg"),
+      //   location: "南投縣",
+      // },
+      // {
+      //   title: "台中購物節",
+      //   img: require("@/assets/image/central.jpg"),
+      //   location: "台中市",
+      // },
     ]);
+
+    const getData = async () => {
+      let data;
+      await getActiveData.get().then((response) => {
+        console.log(response);
+        data = response.map((item) => {
+          console.log(Object.keys(item.Picture).length !== 0);
+          if (Object.keys(item.Picture).length !== 0) {
+            console.log("add", item);
+            return {
+              ActivityID: item.ActivityID,
+              ActivityName: item.ActivityName,
+              Location: item.Location,
+              StartTime: item.StartTime,
+              Picture: item.Picture.PictureUrl1,
+            };
+          }
+        });
+      });
+      console.log("fff", data);
+      activeData.value = data.filter((item) => {
+        return item !== undefined;
+      });
+      console.log("dddd", activeData.value);
+    };
+
+    onMounted(() => {
+      getData();
+    });
     return {
       activeData,
     };
@@ -60,10 +91,19 @@ export default {
 }
 .card {
   flex-direction: row;
+  width: 35rem;
+  height: 160px;
   margin-bottom: 1rem;
+  border-radius: 15px;
   img {
     width: 160px;
     height: auto;
+    border-radius: 15px 0 0 15px;
+  }
+  .card-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 2rem;
   }
   .location {
     margin-bottom: 0;
