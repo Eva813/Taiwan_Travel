@@ -1,16 +1,19 @@
 <template>
-  <Navbar />
+  <Navbar class="navbar" />
   <div class="container">
     <router-view></router-view>
   </div>
+  <Footer class="footer" />
 </template>
 <script>
 import Navbar from "@/components/Navbar.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
   name: "Home",
   components: {
     Navbar,
+    Footer,
   },
 };
 </script>
@@ -36,7 +39,14 @@ export default {
     }
   }
 }
+.navbar {
+  z-index: 300;
+}
+
 .container {
+  margin-top: 65px;
+}
+.footer {
   margin-top: 65px;
 }
 </style>
