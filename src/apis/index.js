@@ -44,6 +44,12 @@ export const getActiveData = {
   }
 }
 
+export const getHotSpot = {
+  get: function (paramObj) {
+    return get("https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?%24top=10&%24format=JSON", paramObj);
+  }
+}
+
 function getAuthorizationHeader() {
   //  填入自己 ID、KEY 開始
   let AppID = '366051c0c1b74b03beaab80a9b7af7b7';

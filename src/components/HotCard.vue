@@ -1,42 +1,53 @@
 <template>
-  <div class="container d-flex flex-wrap justify-content-between">
-    <div class="card hotCard" v-for="item in hotData" :key="item.title">
-      <img :src="item.img" class="card-img-top" alt="hotPlace-image" />
-      <div class="card-body">
-        <h5 class="card-title">{{ item.title }}</h5>
-        <p class="location">
-          <fa icon="map-marker-alt" class="icon" />{{ item.location }}
-        </p>
+  <div class="container row d-flex flex-wrap g-1">
+    <div
+      class="col-3 hotCard-section"
+      v-for="item in hotData"
+      :key="item.ScenicSpotID"
+    >
+      <div class="card hotCard">
+        <div class="image">
+          <img :src="item.Picture" class="card-img-top" alt="hotPlace-image" />
+        </div>
+
+        <div class="card-body">
+          <h5 class="card-title">{{ item.ScenicSpotName }}</h5>
+          <p class="location">
+            <fa icon="map-marker-alt" class="icon" />{{ item.Address }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { reactive } from "vue";
+import { reactive, onMounted, ref } from "vue";
+import { getHotSpot } from "@/apis/index.js";
 export default {
   setup() {
-    const hotData = reactive([
-      {
-        title: "尖石鄉",
-        img: require("@/assets/image/central.jpg"),
-        location: "新竹縣",
-      },
-      {
-        title: "澎湖花火節",
-        img: require("@/assets/image/mountain.jpg"),
-        location: "澎湖縣",
-      },
-      {
-        title: "南投沙雕節",
-        img: require("@/assets/image/central.jpg"),
-        location: "南投縣",
-      },
-      {
-        title: "台中購物節",
-        img: require("@/assets/image/mountain.jpg"),
-        location: "台中市",
-      },
-    ]);
+    const hotData = ref([]);
+    const getData = async () => {
+      let data;
+      await getHotSpot.get().then((response) => {
+        data = response.map((item) => {
+          if (Object.keys(item.Picture).length !== 0) {
+            return {
+              ScenicSpotID: item.ScenicSpotID,
+              ScenicSpotName: item.ScenicSpotName,
+              Picture: item.Picture.PictureUrl1,
+              Address: item.Address,
+            };
+          }
+        });
+        hotData.value = data.filter((item) => {
+          return item !== undefined;
+        });
+        //console.log(hotData.value);
+      });
+    };
+    onMounted(() => {
+      getData();
+    });
     return {
       hotData,
     };
@@ -48,16 +59,27 @@ export default {
 .container {
   margin-top: 0px;
 }
+.hotCard-section {
+  padding: 0 12px;
+}
 .hotCard {
   border: none;
-  height: 200px;
-  max-width: 16rem;
+  height: 350px;
+  width: 16rem;
   .card-body {
     text-align: left;
   }
-  img {
-    border-radius: 15px;
+  .image {
+    height: 200px;
+    width: 255px;
+    img {
+      border-radius: 15px;
+      object-fit: cover;
+      //width: 100%;
+      height: 100%;
+    }
   }
+
   .icon {
     margin-right: 3px;
     vertical-align: -2px;
