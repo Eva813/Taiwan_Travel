@@ -10,7 +10,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">台灣走走 Tai Walk</a>
+      <router-link class="navbar-brand" to="/">台灣走走 Tai Walk</router-link>
       <!-- <button
         class="navbar-toggler"
         type="button"
