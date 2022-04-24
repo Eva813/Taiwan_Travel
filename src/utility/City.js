@@ -6,7 +6,7 @@ const CityList = {
   Taichung: '台中市',
   Tainan: '台南市',
   Kaohsiung: '高雄市',
-  keelung: '基隆市',
+  Keelung: '基隆市',
   Hsinchu: '新竹市',
   HsinchuCounty: '新竹縣',
   MiaoliCounty: '苗栗縣',
