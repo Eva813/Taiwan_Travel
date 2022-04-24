@@ -24,33 +24,37 @@
 import { reactive, onMounted, ref } from "vue";
 import { getHotSpot } from "@/apis/index.js";
 export default {
-  setup() {
-    const hotData = ref([]);
-    const getData = async () => {
-      let data;
-      await getHotSpot.get().then((response) => {
-        data = response.map((item) => {
-          if (Object.keys(item.Picture).length !== 0) {
-            return {
-              ScenicSpotID: item.ScenicSpotID,
-              ScenicSpotName: item.ScenicSpotName,
-              Picture: item.Picture.PictureUrl1,
-              Address: item.Address,
-            };
-          }
-        });
-        hotData.value = data.filter((item) => {
-          return item !== undefined;
-        });
-        //console.log(hotData.value);
-      });
-    };
-    onMounted(() => {
-      getData();
-    });
-    return {
-      hotData,
-    };
+  props: {
+    hotData: {
+      type: Object,
+      required: true,
+    },
+  },
+  setup(props) {
+    //const hotData = props.hotData;
+    // const getData = async () => {
+    //   let data;
+    //   await getHotSpot.get().then((response) => {
+    //     data = response.map((item) => {
+    //       if (Object.keys(item.Picture).length !== 0) {
+    //         return {
+    //           ScenicSpotID: item.ScenicSpotID,
+    //           ScenicSpotName: item.ScenicSpotName,
+    //           Picture: item.Picture.PictureUrl1,
+    //           Address: item.Address,
+    //         };
+    //       }
+    //     });
+    //     hotData.value = data.filter((item) => {
+    //       return item !== undefined;
+    //     });
+    //     //console.log(hotData.value);
+    //   });
+    // };
+    // onMounted(() => {
+    //   getData();
+    // });
+    return {};
   },
 };
 </script>
