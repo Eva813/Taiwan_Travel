@@ -49,6 +49,12 @@ export const getHotSpot = {
     return get("https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?%24top=10&%24format=JSON", paramObj);
   }
 }
+export const filterCity = {
+  get: function (city, paramObj) {
+    return get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/${city}?%24format=JSON`, paramObj);
+  }
+}
+
 
 function getAuthorizationHeader() {
   //  填入自己 ID、KEY 開始
