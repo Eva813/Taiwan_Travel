@@ -50,7 +50,7 @@
   </div>
   <Swiper />
   <h2 class="text-title">近期活動</h2>
-  <ActiveCard />
+  <ActiveCard :activeData="activeData" />
   <h2 class="text-title">熱門打卡景點</h2>
   <HotCard :hotData="hotData" />
 </template>
@@ -62,7 +62,7 @@ import Navbar from "@/components/Navbar.vue";
 import Swiper from "@/components/Swiper.vue";
 import ActiveCard from "@/components/ActiveCard.vue";
 import HotCard from "@/components/HotCard.vue";
-import { getHotSpot } from "@/apis/index.js";
+import { getHotSpot, getActiveData } from "@/apis/index.js";
 import { CityList } from "@/utility/City";
 
 export default {
@@ -75,6 +75,7 @@ export default {
   },
   setup() {
     const hotData = ref([]);
+    const activeData = ref([]);
     const cityList = Object.values(CityList);
     const city = ref("");
 
@@ -84,6 +85,7 @@ export default {
 
     const getData = async () => {
       let data;
+      let data2;
       await getHotSpot.get().then((response) => {
         data = response.map((item) => {
           if (Object.keys(item.Picture).length !== 0) {
@@ -95,18 +97,39 @@ export default {
             };
           }
         });
+
         hotData.value = data.filter((item) => {
           return item !== undefined;
         });
         //console.log(hotData.value);
       });
+
+      await getActiveData.get().then((response) => {
+        //console.log(response);
+        data2 = response.map((item) => {
+          //console.log(Object.keys(item.Picture).length !== 0);
+          if (Object.keys(item.Picture).length !== 0) {
+            return {
+              ActivityID: item.ActivityID,
+              ActivityName: item.ActivityName,
+              Location: item.Location,
+              StartTime: item.StartTime,
+              Picture: item.Picture.PictureUrl1,
+            };
+          }
+        });
+        activeData.value = data2.filter((item) => {
+          return item !== undefined;
+        });
+      });
     };
     onMounted(() => {
       getData();
-      console.log(city.value);
+      //console.log(city.value);
     });
     return {
       hotData,
+      activeData,
       cityList,
       handleSelect,
       city,
