@@ -54,6 +54,13 @@ export const filterCity = {
     return get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/${city}?%24format=JSON`, paramObj);
   }
 }
+//先嘗試在swagger打
+// https://ptx.transportdata.tw/MOTC/v2/Tourism/Activity?%24filter=contains(ActivityID%2C%20'C2_315080000H_080694')&%24format=JSON
+export const filterActivity = {
+  get: function (ActivityID, paramObj) {
+    return get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/Activity?%24filter=contains(ActivityID%2C%20'${ActivityID}')&%24format=JSON`, paramObj);
+  }
+}
 
 
 function getAuthorizationHeader() {
