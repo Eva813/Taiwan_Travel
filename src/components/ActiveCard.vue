@@ -14,7 +14,15 @@
           <p class="location">
             <fa icon="map-marker-alt" class="icon" />{{ item.Location }}
           </p>
-          <a href="#" class="btn">詳細介紹 ></a>
+          <router-link
+            :to="{
+              name: 'DetailPage',
+              params: { ActivityID: item.ActivityID },
+              query: { Activity: item.ActivityID },
+            }"
+            class="btn"
+            >詳細介紹 ></router-link
+          >
         </div>
       </div>
     </div>
@@ -25,59 +33,64 @@ import { reactive, onMounted, ref } from "vue";
 import { getActiveData } from "@/apis/index.js";
 
 export default {
+  props: {
+    activeData: {
+      type: Object,
+      required: true,
+    },
+  },
   setup() {
-    const showData = reactive([]);
-    const activeData = ref([
-      // {
-      //   title: "尖石鄉",
-      //   img: require("@/assets/image/mountain.jpg"),
-      //   location: "新竹縣",
-      // },
-      // {
-      //   title: "澎湖花火節",
-      //   img: require("@/assets/image/central.jpg"),
-      //   location: "澎湖縣",
-      // },
-      // {
-      //   title: "南投沙雕節",
-      //   img: require("@/assets/image/mountain.jpg"),
-      //   location: "南投縣",
-      // },
-      // {
-      //   title: "台中購物節",
-      //   img: require("@/assets/image/central.jpg"),
-      //   location: "台中市",
-      // },
-    ]);
+    // const showData = reactive([]);
+    // const activeData = ref([
+    //   // {
+    //   //   title: "尖石鄉",
+    //   //   img: require("@/assets/image/mountain.jpg"),
+    //   //   location: "新竹縣",
+    //   // },
+    //   // {
+    //   //   title: "澎湖花火節",
+    //   //   img: require("@/assets/image/central.jpg"),
+    //   //   location: "澎湖縣",
+    //   // },
+    //   // {
+    //   //   title: "南投沙雕節",
+    //   //   img: require("@/assets/image/mountain.jpg"),
+    //   //   location: "南投縣",
+    //   // },
+    //   // {
+    //   //   title: "台中購物節",
+    //   //   img: require("@/assets/image/central.jpg"),
+    //   //   location: "台中市",
+    //   // },
+    // ]);
 
-    const getData = async () => {
-      let data;
-      await getActiveData.get().then((response) => {
-        data = response.map((item) => {
-          //console.log(Object.keys(item.Picture).length !== 0);
-          if (Object.keys(item.Picture).length !== 0) {
-            return {
-              ActivityID: item.ActivityID,
-              ActivityName: item.ActivityName,
-              Location: item.Location,
-              StartTime: item.StartTime,
-              Picture: item.Picture.PictureUrl1,
-            };
-          }
-        });
-      });
+    // const getData = async () => {
+    //   let data;
+    //   await getActiveData.get().then((response) => {
+    //     console.log(response)
+    //     data = response.map((item) => {
+    //       //console.log(Object.keys(item.Picture).length !== 0);
+    //       if (Object.keys(item.Picture).length !== 0) {
+    //         return {
+    //           ActivityID: item.ActivityID,
+    //           ActivityName: item.ActivityName,
+    //           Location: item.Location,
+    //           StartTime: item.StartTime,
+    //           Picture: item.Picture.PictureUrl1,
+    //         };
+    //       }
+    //     });
+    //   });
 
-      activeData.value = data.filter((item) => {
-        return item !== undefined;
-      });
-    };
+    //   activeData.value = data.filter((item) => {
+    //     return item !== undefined;
+    //   });
+    // };
 
-    onMounted(() => {
-      getData();
-    });
-    return {
-      activeData,
-    };
+    // onMounted(() => {
+    //   getData();
+    // });
+    return {};
   },
 };
 </script>
