@@ -1,7 +1,7 @@
 <template>
   <div>
     <Swiper />
-    <h2>{{ pageData.ActivityName }}</h2>
+    <h2 class="mt-3">{{ pageData.ActivityName }}</h2>
     <section class="active-content">
       <!-- <span>{{ pageData.subTitle }}</span> -->
       <p class="m-3 text-start">{{ pageData.Description }}</p>
@@ -10,13 +10,19 @@
       <!-- 要判斷活動、景點 是否拆成component,然後判斷3種情境-->
       <div class="row g-2">
         <div class="col-6">
-          <ActiveSlot>
+          <ActiveSlot v-if="category == 'C2'">
             <template v-slot:time>{{ pageData.activeTime }}</template>
             <!-- <template v-slot:phone>{{ pageData.聯絡電話 }}</template> -->
             <template v-slot:org>{{ pageData.org }}</template>
             <template v-slot:location>{{ pageData.Address }}</template>
             <!-- <template v-slot:site>{{ pageData.官方網站 }}</template> -->
           </ActiveSlot>
+          <HotspotsSlot v-if="category == 'C1'">
+            <template v-slot:time>{{ pageData.Time }}</template>
+            <template v-slot:phone>{{ pageData.Phone }}</template>
+            <template v-slot:location>{{ pageData.Address }}</template>
+            <template v-slot:ticket>{{ pageData.TicketInfo }}</template>
+          </HotspotsSlot>
         </div>
         <div class="col-6">
           <div class="p-3 border bg-light">Custom column padding</div>
@@ -30,14 +36,16 @@
 import { reactive, onMounted, ref } from "vue";
 import Swiper from "@/components/Swiper.vue";
 import ActiveSlot from "@/components/ActiveSlot.vue";
+import HotspotsSlot from "@/components/HotspotsSlot.vue";
 import { useRoute } from "vue-router";
-import { filterActivity } from "@/apis/index.js";
+import { filterActivity, filterHotScenicSpot } from "@/apis/index.js";
 
 export default {
   name: "Detail",
   components: {
     Swiper,
     ActiveSlot,
+    HotspotsSlot,
   },
   setup() {
     const route = useRoute();
@@ -68,7 +76,25 @@ export default {
             });
           break;
         case "C1": //熱門景點
-          alert("Apples");
+          await filterHotScenicSpot
+            .get(`${route.params["ActivityID"]}`)
+            .then((res) => {
+              console.log("res", res);
+              let data = res.map((item) => {
+                return {
+                  ActivityName: item.ScenicSpotName,
+                  ActivityID: item.ScenicSpotID,
+                  Description: item.Description,
+                  image1: item.Picture.PictureUrl1,
+                  Phone: item.Phone,
+                  Address: item.Address,
+                  TicketInfo: item.TicketInfo,
+                  Time: item.OpenTime,
+                };
+              });
+              pageData.value = data[0];
+              console.log(pageData.value);
+            });
           break;
         default:
           alert("沒有符合的條件");
@@ -88,6 +114,7 @@ export default {
     });
     return {
       pageData,
+      category,
     };
   },
 };
