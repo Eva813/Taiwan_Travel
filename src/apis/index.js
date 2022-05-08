@@ -62,6 +62,11 @@ export const filterActivity = {
   }
 }
 
+export const filterHotScenicSpot = {
+  get: function (ScenicSpotID, paramObj) {
+    return get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?%24filter=contains(ScenicSpotID%2C%20'${ScenicSpotID}')&%24format=JSON`, paramObj);
+  }
+}
 
 function getAuthorizationHeader() {
   //  填入自己 ID、KEY 開始
