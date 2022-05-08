@@ -38,3 +38,8 @@ button:focus{
     outline: 0;
     box-shadow:none;
 }
+.btn{
+    &:hover{
+        color: #515E4F
+    }
+}
