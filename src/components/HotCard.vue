@@ -15,6 +15,16 @@
           <p class="location">
             <fa icon="map-marker-alt" class="icon" />{{ item.Address }}
           </p>
+
+          <router-link
+            :to="{
+              name: 'DetailPage',
+              params: { ActivityID: item.ScenicSpotID },
+              query: { Activity: item.ScenicSpotID },
+            }"
+            class="btn text-start ps-0"
+            >詳細介紹 ></router-link
+          >
         </div>
       </div>
     </div>
