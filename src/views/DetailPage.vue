@@ -25,9 +25,15 @@
           </HotspotsSlot>
         </div>
         <div class="col-6">
-          <div class="p-3 border bg-light">Custom column padding</div>
+          <template>
+            <h2 class="text-center text-secondary pb-2">景點地圖顯示</h2>
+            <div class="map-container border rounded">
+              <!--地圖呈現在此-->
+            </div>
+          </template>
         </div>
       </div>
+      <div class="google-map" id="map"></div>
     </section>
   </div>
 </template>
@@ -108,13 +114,49 @@ export default {
       getDetailInfo(category.value);
     };
 
+    //地圖
+    const map = ref(null);
+    // 預設經緯度在信義區附近
+    const location = reactive({
+      lat: 25.0325917,
+      lng: 121.5624999,
+    });
+    //https://ithelp.ithome.com.tw/articles/10238282
+    const initMap = () => {
+      map.value = new google.maps.Map(document.getElementById("map"), {
+        // 設定地圖的中心點經緯度位置
+        center: { lat: location.lat, lng: location.lng },
+        // 設定地圖縮放比例 0-20
+        zoom: 16,
+        // 限制使用者能縮放地圖的最大比例
+        maxZoom: 20,
+        // 限制使用者能縮放地圖的最小比例
+        minZoom: 3,
+        // 設定是否呈現右下角街景小人
+        streetViewControl: false,
+        // 設定是否讓使用者可以切換地圖樣式：一般、衛星圖等
+        mapTypeControl: false,
+      });
+    };
+    const setMap = () => {
+      // 建立一個新地標
+      const marker = new google.maps.Marker({
+        // 設定地標的座標
+        position: { lat: location.lat, lng: location.lng },
+        // 設定地標要放在哪一個地圖
+        map: map.value,
+      });
+    };
+
     onMounted(() => {
       categoryPage();
+      initMap();
       console.log("router", route.params["ActivityID"]);
     });
     return {
       pageData,
       category,
+      map,
     };
   },
 };
@@ -127,5 +169,10 @@ export default {
   & > span {
     display: block;
   }
+}
+
+.google-map {
+  width: 100%;
+  height: 300px;
 }
 </style>
