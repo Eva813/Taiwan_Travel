@@ -24,16 +24,18 @@
             <template v-slot:ticket>{{ pageData.TicketInfo }}</template>
           </HotspotsSlot>
         </div>
-        <div class="col-6">
+        <!-- <div class="col-6">
           <template>
             <h2 class="text-center text-secondary pb-2">景點地圖顯示</h2>
             <div class="map-container border rounded">
-              <!--地圖呈現在此-->
+            
             </div>
           </template>
-        </div>
+        </div> -->
       </div>
-      <div class="google-map" id="map"></div>
+      <!-- <div class="google-map" id="map"></div> -->
+        <div class="mapContainer" ref="mapContainer"></div>
+
     </section>
   </div>
 </template>
@@ -45,6 +47,8 @@ import ActiveSlot from "@/components/ActiveSlot.vue";
 import HotspotsSlot from "@/components/HotspotsSlot.vue";
 import { useRoute } from "vue-router";
 import { filterActivity, filterHotScenicSpot } from "@/apis/index.js";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 export default {
   name: "Detail",
@@ -55,8 +59,16 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const activityID = route.params
     const category = ref("");
     const pageData = ref({});
+
+    // // 預設經緯度在信義區附近
+    const location = reactive({
+      lat: 51.505,
+      lng  :  -0.09,
+    });
+
     const getDetailInfo = async (category) => {
       switch (category) {
         case "C2": //觀光活動
@@ -64,6 +76,7 @@ export default {
             .get(`${route.params["ActivityID"]}`)
             .then((res) => {
               console.log("res", res);
+              console.log("res333", res[0].Position.PositionLat);
               let data = res.map((item) => {
                 return {
                   ActivityName: item.ActivityName,
@@ -77,6 +90,10 @@ export default {
                   Address: item.Address,
                 };
               });
+              location.lat = res[0].Position.PositionLat
+              location.lng = res[0].Position.PositionLon
+
+
               pageData.value = data[0];
               console.log(pageData.value);
             });
@@ -107,56 +124,72 @@ export default {
       }
     };
 
-    const categoryPage = () => {
+    const categoryPage = async() => {
+    
       if (!route.params) return;
       category.value = route.params["ActivityID"].slice(0, 2);
       console.log("category", category.value);
-      getDetailInfo(category.value);
+      await getDetailInfo(category.value);
+      console.log('location',location)
+      setMap()
     };
 
     //地圖
-    const map = ref(null);
-    // 預設經緯度在信義區附近
-    const location = reactive({
-      lat: 25.0325917,
-      lng: 121.5624999,
-    });
-    //https://ithelp.ithome.com.tw/articles/10238282
-    const initMap = () => {
-      map.value = new google.maps.Map(document.getElementById("map"), {
-        // 設定地圖的中心點經緯度位置
-        center: { lat: location.lat, lng: location.lng },
-        // 設定地圖縮放比例 0-20
-        zoom: 16,
-        // 限制使用者能縮放地圖的最大比例
-        maxZoom: 20,
-        // 限制使用者能縮放地圖的最小比例
-        minZoom: 3,
-        // 設定是否呈現右下角街景小人
-        streetViewControl: false,
-        // 設定是否讓使用者可以切換地圖樣式：一般、衛星圖等
-        mapTypeControl: false,
-      });
-    };
-    const setMap = () => {
-      // 建立一個新地標
-      const marker = new google.maps.Marker({
-        // 設定地標的座標
-        position: { lat: location.lat, lng: location.lng },
-        // 設定地標要放在哪一個地圖
-        map: map.value,
-      });
-    };
+    const mapContainer = ref(null);
+
+    // const location = reactive([51.505, -0.09]);
+    
+    // //https://ithelp.ithome.com.tw/articles/10238282
+    // const initMap = () => {
+    //   map.value = new google.maps.Map(document.getElementById("map"), {
+    //     // 設定地圖的中心點經緯度位置
+    //     center: { lat: location.lat, lng: location.lng },
+    //     // 設定地圖縮放比例 0-20
+    //     zoom: 16,
+    //     // 限制使用者能縮放地圖的最大比例
+    //     maxZoom: 20,
+    //     // 限制使用者能縮放地圖的最小比例
+    //     minZoom: 3,
+    //     // 設定是否呈現右下角街景小人
+    //     streetViewControl: false,
+    //     // 設定是否讓使用者可以切換地圖樣式：一般、衛星圖等
+    //     mapTypeControl: false,
+    //   });
+    // };
+    // const setMap = () => {
+    //   // 建立一個新地標
+    //   const marker = new google.maps.Marker({
+    //     // 設定地標的座標
+    //     position: { lat: location.lat, lng: location.lng },
+    //     // 設定地標要放在哪一個地圖
+    //     map: map.value,
+    //   });
+    // };
+
+    const setMap = ()=>{
+     const map = L.map(mapContainer.value, {
+            center: [location.lat, location.lng ],
+            zoom: 16,
+          });
+
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          }).addTo(map);
+    }
+
 
     onMounted(() => {
       categoryPage();
-      initMap();
-      console.log("router", route.params["ActivityID"]);
+      console.log(location)
+
+ 
+      // initMap();
+      // console.log("router", route.params["ActivityID"]);
     });
     return {
       pageData,
       category,
-      map,
+      mapContainer,
     };
   },
 };
@@ -171,7 +204,7 @@ export default {
   }
 }
 
-.google-map {
+.mapContainer {
   width: 100%;
   height: 300px;
 }
