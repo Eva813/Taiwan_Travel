@@ -48,7 +48,7 @@
       </div>
     </div>
   </div>
-  <Swiper />
+  <Swiper :bannerImages=bannerImages> </Swiper>
   <h2 class="text-title">近期活動</h2>
   <ActiveCard :activeData="activeData" />
   <h2 class="text-title">熱門打卡景點</h2>
@@ -123,6 +123,12 @@ export default {
         });
       });
     };
+
+    const bannerImages = reactive([
+      {id:1, imgSrc: require('../assets/image/central.jpg')},
+      {id:2, imgSrc: require('../assets/image/mountain.jpg')},
+      {id:3, imgSrc: require('../assets/image/taipei.jpg')},
+    ])
     onMounted(() => {
       getData();
       //console.log(city.value);
@@ -133,6 +139,7 @@ export default {
       cityList,
       handleSelect,
       city,
+      bannerImages
     };
   },
 };

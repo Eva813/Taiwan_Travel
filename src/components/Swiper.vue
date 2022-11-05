@@ -1,19 +1,20 @@
 <template>
   <div class="container">
     <swiper :navigation="true" :modules="modules" class="mySwiper">
-      <swiper-slide>
-        <img src="@/assets/image/mountain.jpg" alt="" srcset="" />
+      <swiper-slide v-for="(img, i) in bannerImages" :key="i">
+        <img :src=img.imgSrc alt="" srcset="" />
       </swiper-slide>
-      <swiper-slide>
+      <!-- <swiper-slide>
         <img src="@/assets/image/central.jpg" alt="" srcset="" />
       </swiper-slide>
       <swiper-slide>
         <img src="@/assets/image/taipei.jpg" alt="" srcset="" />
-      </swiper-slide>
+      </swiper-slide> -->
     </swiper>
   </div>
 </template>
 <script>
+import { reactive, onMounted, ref } from "vue";
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
 
@@ -32,9 +33,22 @@ export default {
     Swiper,
     SwiperSlide,
   },
-  setup() {
+  props:{
+    bannerImages:{
+      type: Array,
+      default: () => ([])
+    }
+  },
+  setup(props) {
+    console.log('props',props.bannerImages)
+    // const bannerImages = reactive([
+    //   {id:1, imgSrc: require('../assets/image/central.jpg')},
+    //   {id:2, imgSrc: require('../assets/image/mountain.jpg')},
+    //   {id:3, imgSrc: require('../assets/image/taipei.jpg')},
+    // ])
     return {
       modules: [Navigation],
+      
     };
   },
 };

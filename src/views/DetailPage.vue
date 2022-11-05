@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Swiper />
+    <Swiper v-if="pageData.images" :bannerImages=pageData.images></Swiper>
     <h2 class="mt-3">{{ pageData.ActivityName }}</h2>
     <section class="active-content">
       <!-- <span>{{ pageData.subTitle }}</span> -->
@@ -24,18 +24,8 @@
             <template v-slot:ticket>{{ pageData.TicketInfo }}</template>
           </HotspotsSlot>
         </div>
-        <!-- <div class="col-6">
-          <template>
-            <h2 class="text-center text-secondary pb-2">景點地圖顯示</h2>
-            <div class="map-container border rounded">
-            
-            </div>
-          </template>
-        </div> -->
       </div>
-      <!-- <div class="google-map" id="map"></div> -->
         <div class="mapContainer" ref="mapContainer"></div>
-
     </section>
   </div>
 </template>
@@ -60,6 +50,7 @@ export default {
   setup() {
     const route = useRoute();
     const activityID = route.params
+    const activityName = ref('')
     const category = ref("");
     const pageData = ref({});
 
@@ -73,11 +64,11 @@ export default {
       switch (category) {
         case "C2": //觀光活動
           await filterActivity
-            .get(`${route.params["ActivityID"]}`)
+            .get(`${route.query["Activity"]}`)
             .then((res) => {
               console.log("res", res);
-              console.log("res333", res[0].Position.PositionLat);
-              let data = res.map((item) => {
+              // console.log("res333", res[0].Position.PositionLat);
+              let data = res.map((item,i) => {
                 return {
                   ActivityName: item.ActivityName,
                   ActivityID: item.ActivityID,
@@ -86,21 +77,31 @@ export default {
                   image1: item.Picture.PictureUrl1,
                   image2: item.Picture.PictureUrl2,
                   image3: item.Picture.PictureUrl3,
+                  images:[{
+                    id: i+1,
+                    imgSrc: item['Picture'].PictureUrl1
+                  }],
                   org: item.Organizer,
                   Address: item.Address,
+                  lat: item.PositionLat,
+                  lng:item.PositionLon,
+                  
                 };
               });
+
               location.lat = res[0].Position.PositionLat
               location.lng = res[0].Position.PositionLon
+              activityName.value = res[0].ActivityName
 
 
               pageData.value = data[0];
               console.log(pageData.value);
+          
             });
           break;
         case "C1": //熱門景點
           await filterHotScenicSpot
-            .get(`${route.params["ActivityID"]}`)
+            .get(`${route.query["Activity"]}`)
             .then((res) => {
               console.log("res", res);
               let data = res.map((item) => {
@@ -113,10 +114,15 @@ export default {
                   Address: item.Address,
                   TicketInfo: item.TicketInfo,
                   Time: item.OpenTime,
+                  lat: item.PositionLat,
+                  lng:item.PositionLon,
                 };
               });
+              location.lat = res[0].Position.PositionLat
+              location.lng = res[0].Position.PositionLon
+              activityName.value = res[0].ActivityName
               pageData.value = data[0];
-              console.log(pageData.value);
+              console.log('page:',pageData.value);
             });
           break;
         default:
@@ -125,49 +131,19 @@ export default {
     };
 
     const categoryPage = async() => {
-    
+      console.log('rrr',route.query)
       if (!route.params) return;
-      category.value = route.params["ActivityID"].slice(0, 2);
+      category.value = route.query["Activity"].slice(0, 2);
       console.log("category", category.value);
       await getDetailInfo(category.value);
-      console.log('location',location)
       setMap()
     };
 
     //地圖
     const mapContainer = ref(null);
 
-    // const location = reactive([51.505, -0.09]);
-    
-    // //https://ithelp.ithome.com.tw/articles/10238282
-    // const initMap = () => {
-    //   map.value = new google.maps.Map(document.getElementById("map"), {
-    //     // 設定地圖的中心點經緯度位置
-    //     center: { lat: location.lat, lng: location.lng },
-    //     // 設定地圖縮放比例 0-20
-    //     zoom: 16,
-    //     // 限制使用者能縮放地圖的最大比例
-    //     maxZoom: 20,
-    //     // 限制使用者能縮放地圖的最小比例
-    //     minZoom: 3,
-    //     // 設定是否呈現右下角街景小人
-    //     streetViewControl: false,
-    //     // 設定是否讓使用者可以切換地圖樣式：一般、衛星圖等
-    //     mapTypeControl: false,
-    //   });
-    // };
-    // const setMap = () => {
-    //   // 建立一個新地標
-    //   const marker = new google.maps.Marker({
-    //     // 設定地標的座標
-    //     position: { lat: location.lat, lng: location.lng },
-    //     // 設定地標要放在哪一個地圖
-    //     map: map.value,
-    //   });
-    // };
-
     const setMap = ()=>{
-     const map = L.map(mapContainer.value, {
+    const map = L.map(mapContainer.value, {
             center: [location.lat, location.lng ],
             zoom: 16,
           });
@@ -175,21 +151,20 @@ export default {
           L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           }).addTo(map);
+          L.marker([location.lat, location.lng ]).addTo(map)
+            .bindPopup(`${pageData.value.ActivityName}`)
+            .openPopup();
     }
-
-
-    onMounted(() => {
-      categoryPage();
-      console.log(location)
-
- 
-      // initMap();
-      // console.log("router", route.params["ActivityID"]);
-    });
+    categoryPage();
+    // onMounted(() => {
+    //   categoryPage();
+    //   // console.log(location)
+    // });
     return {
       pageData,
       category,
       mapContainer,
+
     };
   },
 };
