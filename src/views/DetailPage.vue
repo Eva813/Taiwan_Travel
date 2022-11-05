@@ -25,7 +25,7 @@
           </HotspotsSlot>
         </div>
       </div>
-        <div class="mapContainer" ref="mapContainer"></div>
+        <div class="mapContainer mt-3" ref="mapContainer"></div>
     </section>
   </div>
 </template>
