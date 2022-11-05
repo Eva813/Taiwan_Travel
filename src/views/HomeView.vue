@@ -9,7 +9,7 @@
             讓我們更親近這片土地
           </h2>
           <div class="text-start">
-            icon 台灣旅遊景點導覽 Taiwan Travel Guide
+            <i class="twicon-main-island"></i> 台灣旅遊景點導覽 Taiwan Travel Guide
           </div>
         </div>
       </div>

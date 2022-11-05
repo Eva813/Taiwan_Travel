@@ -7,6 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
+import './assets/helpers/twicon.css';
 // import L from "leaflet";
 // import "leaflet/dist/leaflet.css";
 
