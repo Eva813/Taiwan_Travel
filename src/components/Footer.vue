@@ -1,6 +1,7 @@
 <template>
   <div class="footer">
-    <p class="footer-text">#The F2E 3rd Week01 #Breakfast</p>
+    <p class="footer-text">#The F2E 3rd Week01 <span> 台灣走走 © Code: Eva / Design: Breakfast </span></p>
+    
   </div>
 </template>
 <style lang="scss" scoped>
