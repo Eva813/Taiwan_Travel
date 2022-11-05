@@ -1,5 +1,5 @@
 <template>
-  <div class="container d-flex flex-wrap justify-content-between">
+  <div class="container d-flex">
     <div class="card" v-for="item in activeData" :key="item.ActivityID">
       <img
         :src="item.Picture"
@@ -98,10 +98,12 @@ export default {
 @import "~@/assets/all.scss";
 .container {
   margin-top: 0px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 .card {
   flex-direction: row;
-  width: 35rem;
+  width: 49%;
   height: 160px;
   margin-bottom: 1rem;
   border-radius: 15px;
