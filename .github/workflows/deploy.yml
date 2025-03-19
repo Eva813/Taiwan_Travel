@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # 當 main 分支有新的 commit 時觸發部署
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'  # 可以根據需求設置 Node.js 版本
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Build the project
+      run: |
+        echo "VUE_APP_CLIENT_ID=${{ secrets.CLIENT_ID }}" > .env
+        echo "VUE_APP_CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
+        npm run build  # 構建專案
+
+    - name: Deploy to GitHub Pages
+      run: |
+        cd dist
+        git init
+        git add -A
+        git commit -m 'deploy'
+        git branch -M gh-pages
+        git remote add origin https://github.com/Eva813/Taiwan_Travel.git
+        git push -f origin gh-pages  # 將打包後的結果推送到 gh-pages 分支
+
+    - name: Clean up
+      run: |
+        cd ..
