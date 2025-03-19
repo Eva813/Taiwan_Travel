@@ -34,6 +34,10 @@ jobs:
         echo "VUE_APP_CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
         npm run build  # 構建專案
 
+    - name: Set up GitHub token for pushing
+      run: |
+        git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Eva813/Taiwan_Travel.git
+
     - name: Deploy to GitHub Pages
       run: |
         cd dist
@@ -41,8 +45,7 @@ jobs:
         git add -A
         git commit -m 'deploy'
         git branch -M gh-pages
-        git remote add origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Eva813/Taiwan_Travel.git
-        git push -f origin gh-pages  # 將打包後的結果推送到 gh-pages 分支
+        git push -f origin gh-pages  # 使用 GitHub Token 進行推送
 
     - name: Clean up
       run: |
