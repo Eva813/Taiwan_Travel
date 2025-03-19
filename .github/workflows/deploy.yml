@@ -41,7 +41,7 @@ jobs:
         git add -A
         git commit -m 'deploy'
         git branch -M gh-pages
-        git remote add origin https://x-access-token:${{ github.token }}@github.com/Eva813/Taiwan_Travel.git
+        git remote add origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Eva813/Taiwan_Travel.git
         git push -f origin gh-pages  # 將打包後的結果推送到 gh-pages 分支
 
     - name: Clean up
