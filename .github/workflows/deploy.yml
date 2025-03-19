@@ -3,51 +3,35 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # 當 main 分支有新的 commit 時觸發部署
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the repository
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'  # 可以根據需求設置 Node.js 版本
+        node-version: '18'
 
     - name: Install dependencies
-      run: |
-        npm install
-    
-    - name: Set Git user info
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git config --global init.defaultBranch main  # 設置默認分支為 main
+      run: npm ci
 
-    - name: Build the project
+    - name: Inject environment variables
       run: |
         echo "VUE_APP_CLIENT_ID=${{ secrets.CLIENT_ID }}" > .env
         echo "VUE_APP_CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
-        npm run build  # 構建專案
 
-    - name: Set up GitHub token for pushing
-      run: |
-        git remote add origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Eva813/Taiwan_Travel.git
-        git fetch origin  # 確保遠端資料被拉取
+    - name: Build project
+      run: npm run build
 
     - name: Deploy to GitHub Pages
-      run: |
-        cd dist
-        git init
-        git add -A
-        git commit -m 'deploy'
-        git branch -M gh-pages
-        git push -f origin gh-pages  # 使用 GitHub Token 進行推送
-
-    - name: Clean up
-      run: |
-        cd ..
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: dist
+        token: ${{ secrets.GITHUB_TOKEN }}
