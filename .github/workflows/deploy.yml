@@ -36,7 +36,8 @@ jobs:
 
     - name: Set up GitHub token for pushing
       run: |
-        git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Eva813/Taiwan_Travel.git
+        git remote add origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Eva813/Taiwan_Travel.git
+        git fetch origin  # 確保遠端資料被拉取
 
     - name: Deploy to GitHub Pages
       run: |
