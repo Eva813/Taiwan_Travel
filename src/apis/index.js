@@ -17,18 +17,30 @@ import jsSHA from "jssha"
 //     console.log(error);
 //   });
 
+
 export function get(url) {
   return new Promise((resolve, reject) => {
-    axios
-      .get(url, {
-        headers: getAuthorizationHeader()
+    getAccessToken()
+      .then(accessToken => {
+        // 使用 fetch 進行 GET 請求，並加上 Authorization Header
+        fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Accept-Encoding': 'gzip, deflate, br',  // 可選：減少數據傳輸
+          },
+        })
+          .then(response => {
+            if (!response.ok) {
+              reject(`Request failed with status ${response.status}`);
+            } else {
+              return response.json();
+            }
+          })
+          .then(data => resolve(data))
+          .catch(err => reject(err));
       })
-      .then(response => {
-        resolve(response.data);
-      })
-      .catch(err => {
-        reject(err);
-      });
+      .catch(err => reject(err));
   });
 }
 
@@ -40,44 +52,57 @@ export const getTransportData = {
 
 export const getActiveData = {
   get: function (paramObj) {
-    return get("https://ptx.transportdata.tw/MOTC/v2/Tourism/Activity?%24top=10&%24format=JSON", paramObj);
+    return get("https://tdx.transportdata.tw/api/basic/v2/Tourism/Activity?%24top=10&%24format=JSON", paramObj);
   }
 }
 
 export const getHotSpot = {
   get: function (paramObj) {
-    return get("https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?%24top=10&%24format=JSON", paramObj);
+    return get("https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot?%24top=10&%24", paramObj);
   }
 }
+// 2025 swagger: https://tdx.transportdata.tw/api-service/swagger/basic/cd0226cf-6292-4c35-8a0d-b595f0b15352#/
 export const filterCity = {
   get: function (city, paramObj) {
-    return get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/${city}?%24format=JSON`, paramObj);
+    return get(`https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot/${city}?%24top=30&%24format=JSON`, paramObj);
   }
 }
-//先嘗試在swagger打
-// https://ptx.transportdata.tw/MOTC/v2/Tourism/Activity?%24filter=contains(ActivityID%2C%20'C2_315080000H_080694')&%24format=JSON
+
 export const filterActivity = {
   get: function (ActivityID, paramObj) {
-    return get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/Activity?%24filter=contains(ActivityID%2C%20'${ActivityID}')&%24format=JSON`, paramObj);
+    return get(`https://tdx.transportdata.tw/api/basic/v2/Tourism/Activity?%24filter=contains(ActivityID%2C%20'${ActivityID}')&%24format=JSON`, paramObj);
   }
 }
 
 export const filterHotScenicSpot = {
   get: function (ScenicSpotID, paramObj) {
-    return get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot?%24filter=contains(ScenicSpotID%2C%20'${ScenicSpotID}')&%24format=JSON`, paramObj);
+    return get(`https://tdx.transportdata.tw/api/basic/v2/Tourism/ScenicSpot?%24filter=contains(ScenicSpotID%2C%20'${ScenicSpotID}')&%24format=JSON`, paramObj);
   }
 }
 
-function getAuthorizationHeader() {
-  //  填入自己 ID、KEY 開始
-  let AppID = '366051c0c1b74b03beaab80a9b7af7b7';
-  let AppKey = 'IFAvXgau9Z9-Cwztbu98F53jkpM';
-  //  填入自己 ID、KEY 結束
-  let GMTString = new Date().toGMTString();
-  let ShaObj = new jsSHA('SHA-1', 'TEXT');
-  ShaObj.setHMACKey(AppKey, 'TEXT');
-  ShaObj.update('x-date: ' + GMTString);
-  let HMAC = ShaObj.getHMAC('B64');
-  let Authorization = 'hmac username=\"' + AppID + '\", algorithm=\"hmac-sha1\", headers=\"x-date\", signature=\"' + HMAC + '\"';
-  return { 'Authorization': Authorization, 'X-Date': GMTString };
+async function getAccessToken() {
+  const tokenUrl = 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token';
+  const clientId = process.env.VUE_APP_CLIENT_ID;
+  const clientSecret = process.env.VUE_APP_CLIENT_SECRET;  // 填入你的 Client Secret
+
+  const params = new URLSearchParams();
+  params.append('grant_type', 'client_credentials');
+  params.append('client_id', clientId);
+  params.append('client_secret', clientSecret);
+
+  const response = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params.toString(),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch access token');
+  }
+
+  const data = await response.json();
+  return data.access_token;
 }
+

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SearchResult from '../views/SearchResult.vue'
 import DetailPage from '../views/DetailPage.vue'
+import SimpleCarousel from '../views/SimpleCarousel.vue'
 
 const routes = [
   {
@@ -27,6 +28,11 @@ const routes = [
     name: 'DetailPage',
     component: DetailPage
   },
+  // {
+  //   path: '/simple',
+  //   name: 'simple',
+  //   component: SimpleCarousel
+  // },
 ]
 
 const router = createRouter({

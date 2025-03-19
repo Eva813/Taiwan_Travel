@@ -2,11 +2,7 @@
   <div class="container">
     <div class="serchBar d-flex align-items-center justify-content-around">
       <div class="dropdown-section">
-        <select
-          class="select-items rounded-3"
-          v-model="city"
-          @change="handleSelect(city)"
-        >
+        <select class="select-items rounded-3" v-model="city" @change="handleSelect(city)">
           <option disabled value="">請選擇縣市</option>
           <option v-for="(item, index) in cityList" :key="index">
             {{ item }}
@@ -14,11 +10,7 @@
         </select>
       </div>
       <div class="input-section">
-        <input
-          class="rounded-3"
-          type="text"
-          placeholder="你想去哪裡？請輸入關鍵字"
-        />
+        <input class="rounded-3" type="text" placeholder="你想去哪裡？請輸入關鍵字" />
       </div>
       <button class="btn search-btn rounded-3">搜尋</button>
     </div>
@@ -32,30 +24,20 @@
     </div>
     <div class="section">
       <div aria-label="Page navigation example">
-        <ul
-          class="pagination justify-content-center pages"
-          @click.prevent="handlePagination($event)"
-        >
+        <ul class="pagination justify-content-center pages" @click.prevent="handlePagination($event)">
           <li :class="['page-item', pagination.isFirst ? 'disabled' : '']">
             <a class="page-link" href="#" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
-          <li
-            :class="['page-item', pagination.nowPage == number ? 'active' : '']"
-            v-for="number in pagination.totalPages"
-          >
+          <li :class="['page-item', pagination.nowPage == number ? 'active' : '']"
+            v-for="number in pagination.totalPages">
             <a class="page-link" href="#" :data-page="number">{{ number }}</a>
           </li>
           <!-- <li class="page-item"><a class="page-link" href="#">2</a></li>
           <li class="page-item"><a class="page-link" href="#">3</a></li> -->
           <li :class="['page-item', pagination.isLast ? 'disabled' : '']">
-            <a
-              class="page-link"
-              href="#"
-              aria-label="Next"
-              :data-page="pagination.nowPage + 1"
-            >
+            <a class="page-link" href="#" aria-label="Next" :data-page="pagination.nowPage + 1">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
@@ -166,7 +148,6 @@ export default {
     watch(
       () => city.value,
       (newVal, oldVal) => {
-        //console.log("newVal", newVal, "oldVal", oldVal);
         if (newVal !== oldVal) {
           handleSelect(newVal);
         } else {
@@ -227,20 +208,23 @@ option {
   background: #fff;
   position: absolute;
 }
+
 .input-section {
   width: 50%;
 
-  > input {
+  >input {
     border: 1px solid #e6e6e6;
     background-color: #f9f9f9;
     margin: 15px 15px 15px 0;
     height: 3em;
     width: 100%;
+
     &::placeholder {
       padding: 10px;
     }
   }
 }
+
 .search-btn {
   width: 20%;
   padding: 10px;
@@ -253,6 +237,7 @@ option {
 .search-sapn {
   display: inline-block;
 }
+
 .search-null {
   height: 57vh;
   display: flex;
